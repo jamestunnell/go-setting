@@ -13,7 +13,7 @@ import (
 func TestFromStructGivenStructNonPointer(t *testing.T) {
 	type MyStruct struct{}
 
-	s, err := settings.FromStructPtr(MyStruct{})
+	s, err := settings.FromStructPtr("ABC", MyStruct{})
 
 	assert.Error(t, err)
 	assert.Nil(t, s)
@@ -23,13 +23,13 @@ func TestFromStructPtrEmpty(t *testing.T) {
 	type MyStruct struct{}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr(x)
+	s, err := settings.FromStructPtr("ABC", x)
 
 	if !assert.NoError(t, err) || !assert.NotNil(t, s) {
 		return
 	}
 
-	assert.Equal(t, "MyStruct", s.Name())
+	assert.Equal(t, "ABC", s.Name())
 	assert.Len(t, s.Elements(), 0)
 	assert.Equal(t, x, s.StructPtr())
 }
@@ -62,13 +62,13 @@ func TestFromStructPtrFieldsForAllSupportedValueTypes(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr(x)
+	s, err := settings.FromStructPtr("XYZ", x)
 
 	if !assert.NoError(t, err) || !assert.NotNil(t, s) {
 		return
 	}
 
-	assert.Equal(t, "MyStruct", s.Name())
+	assert.Equal(t, "XYZ", s.Name())
 	assert.Len(t, s.Elements(), len(expectedElems))
 	assert.Equal(t, x, s.StructPtr())
 
@@ -103,7 +103,7 @@ func TestFromStructPtrDuplicateElemNames(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr(x)
+	s, err := settings.FromStructPtr("ABC", x)
 
 	assert.Error(t, err)
 	assert.Nil(t, s)
@@ -115,7 +115,7 @@ func TestFromStructPtrInvalidOptionTag(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr(x)
+	s, err := settings.FromStructPtr("ABC", x)
 
 	assert.Nil(t, s)
 	assert.Error(t, err)
@@ -127,7 +127,7 @@ func TestFromStructPtrMissingNameOption(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr(x)
+	s, err := settings.FromStructPtr("ABC", x)
 
 	assert.NotNil(t, s)
 	assert.NoError(t, err)
@@ -143,7 +143,7 @@ func TestFromStructPtrEmptyNameOption(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr(x)
+	s, err := settings.FromStructPtr("ABC", x)
 
 	// Empty option values are ignored
 	assert.NotNil(t, s)
@@ -156,7 +156,7 @@ func TestFromStructPtrBadElemName(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr(x)
+	s, err := settings.FromStructPtr("ABC", x)
 
 	assert.Nil(t, s)
 	assert.Error(t, err)
@@ -168,7 +168,40 @@ func TestFromStructPtrBadOptionValue(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr(x)
+	s, err := settings.FromStructPtr("ABC", x)
+
+	assert.Nil(t, s)
+	assert.Error(t, err)
+}
+
+func TestFromStructWithSubsetting(t *testing.T) {
+	type A struct {
+		X int64 `less:"2"`
+	}
+
+	type B struct {
+		A *A
+	}
+
+	b := &B{}
+	s, err := settings.FromStructPtr("ABC", b)
+
+	assert.NotNil(t, s)
+	assert.NoError(t, err)
+	assert.Len(t, s.Subsettings(), 1)
+}
+
+func TestFromStructFailToMakeSubsetting(t *testing.T) {
+	type A struct {
+		X int64 `less:"true"`
+	}
+
+	type B struct {
+		A *A
+	}
+
+	b := &B{}
+	s, err := settings.FromStructPtr("ABC", b)
 
 	assert.Nil(t, s)
 	assert.Error(t, err)

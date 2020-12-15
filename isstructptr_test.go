@@ -1,6 +1,7 @@
 package settings_test
 
 import (
+	"reflect"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -9,7 +10,7 @@ import (
 )
 
 func TestIsStructPointerGivenNonStruct(t *testing.T) {
-	typ, ok := settings.IsStructPointer(5)
+	typ, ok := settings.IsStructPointer(reflect.TypeOf(5))
 
 	assert.Nil(t, typ)
 	assert.False(t, ok)
@@ -17,7 +18,7 @@ func TestIsStructPointerGivenNonStruct(t *testing.T) {
 
 func TestFromStructPtrGivenStruct(t *testing.T) {
 	x := struct{ X int }{X: 5}
-	typ, ok := settings.IsStructPointer(x)
+	typ, ok := settings.IsStructPointer(reflect.TypeOf(x))
 
 	assert.Nil(t, typ)
 	assert.False(t, ok)
@@ -25,7 +26,7 @@ func TestFromStructPtrGivenStruct(t *testing.T) {
 
 func TestFromStructPtrGivenNonStructPtr(t *testing.T) {
 	x := 5
-	typ, ok := settings.IsStructPointer(&x)
+	typ, ok := settings.IsStructPointer(reflect.TypeOf(&x))
 
 	assert.Nil(t, typ)
 	assert.False(t, ok)
@@ -34,7 +35,7 @@ func TestFromStructPtrGivenNonStructPtr(t *testing.T) {
 func TestFromStructPtrHappyPath(t *testing.T) {
 	type MyStruct struct{ X int }
 	x := &MyStruct{X: 5}
-	typ, ok := settings.IsStructPointer(x)
+	typ, ok := settings.IsStructPointer(reflect.TypeOf(x))
 
 	assert.NotNil(t, typ)
 	assert.True(t, ok)
