@@ -36,29 +36,29 @@ func TestFromStructPtrEmpty(t *testing.T) {
 
 func TestFromStructPtrFieldsForAllSupportedValueTypes(t *testing.T) {
 	type MyStruct struct {
-		A float64   `name:"a" default:"7.2"`
-		B int64     `name:"b" greater:"20"`
-		C uint64    `name:"c" less:"100"`
-		D string    `name:"d" minLen:"10"`
-		E bool      `name:"e"`
-		F []float64 `name:"f" default:"7.2,4.4"`
-		G []int64   `name:"g" greater:"20"`
-		H []uint64  `name:"h" less:"100"`
-		I []string  `name:"i" minLen:"10"`
-		J []bool    `name:"j" maxLen:"7"`
+		A float64 `default:"7.2"`
+		B int64   `greater:"20"`
+		C uint64  `less:"100"`
+		D string  `minLen:"10"`
+		E bool
+		F []float64 `default:"7.2,4.4"`
+		G []int64   `greater:"20"`
+		H []uint64  `less:"100"`
+		I []string  `minLen:"10"`
+		J []bool    `maxLen:"7"`
 	}
 
 	expectedElems := []*element.Element{
-		element.New("a", value.Float64, option.New(option.Name, "a"), option.New(option.Default, 7.2)),
-		element.New("b", value.Int64, option.New(option.Name, "b"), option.New(option.Greater, int64(20))),
-		element.New("c", value.UInt64, option.New(option.Name, "c"), option.New(option.Less, uint64(100))),
-		element.New("d", value.String, option.New(option.Name, "d"), option.New(option.MinLen, uint64(10))),
-		element.New("e", value.Bool, option.New(option.Name, "e")),
-		element.New("f", value.Float64s, option.New(option.Name, "f"), option.New(option.Default, []float64{7.2, 4.4})),
-		element.New("g", value.Int64s, option.New(option.Name, "g"), option.New(option.Greater, int64(20))),
-		element.New("h", value.UInt64s, option.New(option.Name, "h"), option.New(option.Less, uint64(100))),
-		element.New("i", value.Strings, option.New(option.Name, "i"), option.New(option.MinLen, uint64(10))),
-		element.New("j", value.Bools, option.New(option.Name, "j"), option.New(option.MaxLen, uint64(7))),
+		element.New("A", value.Float64, option.New(option.Default, 7.2)),
+		element.New("B", value.Int64, option.New(option.Greater, int64(20))),
+		element.New("C", value.UInt64, option.New(option.Less, uint64(100))),
+		element.New("D", value.String, option.New(option.MinLen, uint64(10))),
+		element.New("E", value.Bool),
+		element.New("F", value.Float64s, option.New(option.Default, []float64{7.2, 4.4})),
+		element.New("G", value.Int64s, option.New(option.Greater, int64(20))),
+		element.New("H", value.UInt64s, option.New(option.Less, uint64(100))),
+		element.New("I", value.Strings, option.New(option.MinLen, uint64(10))),
+		element.New("J", value.Bools, option.New(option.MaxLen, uint64(7))),
 	}
 
 	x := &MyStruct{}
@@ -96,22 +96,9 @@ func TestFromStructPtrFieldsForAllSupportedValueTypes(t *testing.T) {
 	}
 }
 
-func TestFromStructPtrDuplicateElemNames(t *testing.T) {
-	type MyStruct struct {
-		A float64 `name:"a" default:"7.2"`
-		B int64   `name:"a" greater:"20"`
-	}
-
-	x := &MyStruct{}
-	s, err := group.FromStructPtr("ABC", x)
-
-	assert.Error(t, err)
-	assert.Nil(t, s)
-}
-
 func TestFromStructPtrInvalidOptionTag(t *testing.T) {
 	type MyStruct struct {
-		X int `name=5`
+		X int `default=5`
 	}
 
 	x := &MyStruct{}
@@ -135,31 +122,6 @@ func TestFromStructPtrMissingNameOption(t *testing.T) {
 
 	// Field name is used by default
 	assert.Equal(t, "X", s.Elements()[0].Name())
-}
-
-func TestFromStructPtrEmptyNameOption(t *testing.T) {
-	type MyStruct struct {
-		X int64 `name:""`
-	}
-
-	x := &MyStruct{}
-	s, err := group.FromStructPtr("ABC", x)
-
-	// Empty option values are ignored
-	assert.NotNil(t, s)
-	assert.NoError(t, err)
-}
-
-func TestFromStructPtrBadElemName(t *testing.T) {
-	type MyStruct struct {
-		X int64 `name:"x..."`
-	}
-
-	x := &MyStruct{}
-	s, err := group.FromStructPtr("ABC", x)
-
-	assert.Nil(t, s)
-	assert.Error(t, err)
 }
 
 func TestFromStructPtrBadOptionValue(t *testing.T) {

@@ -5,7 +5,7 @@ import "github.com/jamestunnell/go-settings/value"
 // ApplicableTo returns true if the current option is applicable to the given value type.
 func (t Type) ApplicableTo(valType value.Type) bool {
 	switch t {
-	case Name, Default:
+	case Default:
 		return true
 	case MinLen, MaxLen:
 		switch valType {

@@ -55,13 +55,6 @@ func TestFromTagOptionNotAllowedWithValue(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestFromTagValidNameValue(t *testing.T) {
-	for _, valType := range value.AllTypes() {
-		testFromTagValidOptionVal(t, valType, option.Name, "-7")
-		testFromTagValidOptionVal(t, valType, option.Name, "anything! (for now...)")
-	}
-}
-
 func TestFromTagInvalidDefaultValue(t *testing.T) {
 	testFromTagInvalidOptionVal(t, value.Int64, option.Default, "2.5")
 	testFromTagInvalidOptionVal(t, value.Int64s, option.Default, "-7,2.5")

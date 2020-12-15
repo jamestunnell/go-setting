@@ -9,27 +9,23 @@ import (
 // more options. If the default option is present then the element
 // is considered to be 'required' and must be given a value.
 type Element struct {
-	fieldName string
-	typ       value.Type
-	options   []*option.Option
+	name    string
+	typ     value.Type
+	options []*option.Option
 }
 
 // New makes a new element.
 func New(
-	fieldName string,
+	name string,
 	typ value.Type,
 	options ...*option.Option,
 ) *Element {
-	return &Element{fieldName: fieldName, typ: typ, options: options}
+	return &Element{name: name, typ: typ, options: options}
 }
 
 // Name returns the element name.
 func (e *Element) Name() string {
-	if nameOpt := e.Option(option.Name); nameOpt != nil {
-		return nameOpt.Param.(string)
-	}
-
-	return e.fieldName
+	return e.name
 }
 
 // Type returns the element type.

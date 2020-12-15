@@ -21,7 +21,6 @@ func TestApplicableToNumberSlice(t *testing.T) {
 }
 
 func TestApplicableToString(t *testing.T) {
-	assert.True(t, option.Name.ApplicableTo(value.String))
 	assert.True(t, option.Default.ApplicableTo(value.String))
 	assert.True(t, option.OneOf.ApplicableTo(value.String))
 	assert.False(t, option.Greater.ApplicableTo(value.String))
@@ -33,7 +32,6 @@ func TestApplicableToString(t *testing.T) {
 }
 
 func TestApplicableToBool(t *testing.T) {
-	assert.True(t, option.Name.ApplicableTo(value.Bool))
 	assert.True(t, option.Default.ApplicableTo(value.Bool))
 	assert.False(t, option.OneOf.ApplicableTo(value.Bool))
 	assert.False(t, option.Greater.ApplicableTo(value.Bool))
@@ -50,7 +48,6 @@ func TestApplicableToNonNumberSlice(t *testing.T) {
 }
 
 func testApplicableToNumber(t *testing.T, valType value.Type) {
-	assert.True(t, option.Name.ApplicableTo(valType))
 	assert.True(t, option.Default.ApplicableTo(valType))
 	assert.True(t, option.OneOf.ApplicableTo(valType))
 	assert.True(t, option.Greater.ApplicableTo(valType))
@@ -62,7 +59,6 @@ func testApplicableToNumber(t *testing.T, valType value.Type) {
 }
 
 func testApplicableToNumberSlice(t *testing.T, valType value.Type) {
-	assert.True(t, option.Name.ApplicableTo(valType))
 	assert.True(t, option.Default.ApplicableTo(valType))
 	assert.False(t, option.OneOf.ApplicableTo(valType))
 	assert.True(t, option.Greater.ApplicableTo(valType))
@@ -74,7 +70,6 @@ func testApplicableToNumberSlice(t *testing.T, valType value.Type) {
 }
 
 func testApplicableToNonNumberSlice(t *testing.T, valType value.Type) {
-	assert.True(t, option.Name.ApplicableTo(valType))
 	assert.True(t, option.Default.ApplicableTo(valType))
 	assert.False(t, option.OneOf.ApplicableTo(valType))
 	assert.False(t, option.Greater.ApplicableTo(valType))

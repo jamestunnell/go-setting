@@ -57,13 +57,8 @@ func FromStructPtr(name string, structptr interface{}) (*Group, error) {
 				return nil, err
 			}
 
-			elemName := elem.Name()
-			if !matchElemName.MatchString(elemName) {
-				return nil, fmt.Errorf("element name '%s' has invalid format", elemName)
-			}
-
-			if findElement(elems, elemName) != nil {
-				return nil, fmt.Errorf("element name '%s' is duplicated", elemName)
+			if findElement(elems, elem.Name()) != nil {
+				return nil, fmt.Errorf("element name '%s' is duplicated", elem.Name())
 			}
 
 			elems = append(elems, elem)

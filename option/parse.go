@@ -35,8 +35,6 @@ func Parse(valType value.Type, optType Type, paramStr string) (*Option, error) {
 	valTypeToParse := valType
 
 	switch optType {
-	case Name:
-		valTypeToParse = value.String
 	case MinLen, MaxLen:
 		valTypeToParse = value.UInt64
 	case OneOf:

@@ -30,15 +30,6 @@ func TestNewWithDefault(t *testing.T) {
 	assert.NotNil(t, e.Option(option.Default))
 }
 
-func TestNewWithName(t *testing.T) {
-	def := option.New(option.Name, "xyz")
-	e := element.New("abc", value.Float64, def)
-
-	assert.Len(t, e.Options(), 1)
-	assert.NotNil(t, e.Option(option.Name))
-	assert.Equal(t, "xyz", e.Name())
-}
-
 func TestNewWithTwoOptions(t *testing.T) {
 	def := option.New(option.Default, 2.5)
 	less := option.New(option.Less, 5.0)

@@ -4,10 +4,8 @@ package option
 type Type int
 
 const (
-	// Name indicates an element name (different from the struct field name)
-	Name Type = iota
 	// Default indicates an optional default value
-	Default
+	Default Type = iota
 	// MinLen indicates a minimum length for array value types
 	MinLen
 	// MaxLen indicates a maximum length for array value types
@@ -23,8 +21,6 @@ const (
 	// OneOf indicates an enumerated value
 	OneOf
 
-	// NameStr represents an element name (different from the struct field name)
-	NameStr = "name"
 	// DefaultStr represents an optional default value
 	DefaultStr = "default"
 	// MinLenStr represents a minimum length for array value types
@@ -46,7 +42,7 @@ const (
 // AllTypes returns all of the option types.
 func AllTypes() []Type {
 	return []Type{
-		Name, Default, MinLen, MaxLen, Greater, GreaterEqual, Less, LessEqual, OneOf}
+		Default, MinLen, MaxLen, Greater, GreaterEqual, Less, LessEqual, OneOf}
 }
 
 // Valid returns if the current type is one of AllTypes
@@ -63,8 +59,6 @@ func (t Type) Valid() bool {
 // String returns a string representation of the option type.
 func (t Type) String() string {
 	switch t {
-	case Name:
-		return NameStr
 	case Default:
 		return DefaultStr
 	case MinLen:
