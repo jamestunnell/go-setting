@@ -5,7 +5,7 @@ import (
 	"github.com/jamestunnell/go-settings/value"
 )
 
-// Element is a named setting element, specifying type and zero or
+// Element is a named setting group element, specifying type and zero or
 // more options. If the default option is present then the element
 // is considered to be 'required' and must be given a value.
 type Element struct {

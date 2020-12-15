@@ -1,4 +1,4 @@
-package settings
+package group
 
 import (
 	"errors"
@@ -12,14 +12,14 @@ import (
 
 var matchElemName = regexp.MustCompile(`^[_A-Za-z_][0-9A-Za-z_]*$`)
 
-// FromStructPtr makes a new Settings using the given struct pointer.
+// FromStructPtr makes a new Group using the given struct pointer.
 // Returns non-nil error in case of failure.
 // Failure can be due to: given value is not a pointer to a struct,
-// unsupported field type, missing 'settings' tag, invalid element name,
-// duplicate element name, invalid option format, invalid option param format,
-// an option that is not applicable to the field type, or an option that is not
+// unsupported field type, duplicate or invalid element name,
+// invalid option format, invalid option param format, an option that
+// is not applicable to the field type, or an option that is not
 // compatible with another option for the same element.
-func FromStructPtr(name string, structptr interface{}) (*Settings, error) {
+func FromStructPtr(name string, structptr interface{}) (*Group, error) {
 	v := reflect.ValueOf(structptr)
 
 	t, ok := IsStructPointer(v.Type())
@@ -27,7 +27,7 @@ func FromStructPtr(name string, structptr interface{}) (*Settings, error) {
 		return nil, errors.New("not a pointer to struct")
 	}
 
-	subsettings := []*Settings{}
+	subgroups := []*Group{}
 	elems := []*element.Element{}
 
 	for i := 0; i < t.NumField(); i++ {
@@ -39,11 +39,11 @@ func FromStructPtr(name string, structptr interface{}) (*Settings, error) {
 			subsetting, err := FromStructPtr(f.Name, vField.Interface())
 			if err != nil {
 				err := fmt.Errorf(
-					"failed to make sub-settings from field %s: %w", f.Name, err)
+					"failed to make sub-group from field %s: %w", f.Name, err)
 				return nil, err
 			}
 
-			subsettings = append(subsettings, subsetting)
+			subgroups = append(subgroups, subsetting)
 		} else {
 			valType := getFieldValType(f.Type)
 			if valType == -1 {
@@ -70,11 +70,11 @@ func FromStructPtr(name string, structptr interface{}) (*Settings, error) {
 		}
 	}
 
-	s := &Settings{
-		name:        name,
-		elements:    elems,
-		structptr:   structptr,
-		subsettings: subsettings,
+	s := &Group{
+		name:      name,
+		elements:  elems,
+		structptr: structptr,
+		subgroups: subgroups,
 	}
 
 	return s, nil

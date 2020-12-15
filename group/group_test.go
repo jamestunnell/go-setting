@@ -1,13 +1,13 @@
-package settings_test
+package group_test
 
 import (
 	"testing"
 
-	"github.com/jamestunnell/go-settings"
+	"github.com/jamestunnell/go-settings/group"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSettingsTwoElementsNoSubsettings(t *testing.T) {
+func TestGroupTwoElementsNoSubsettings(t *testing.T) {
 	type MyStruct struct {
 		A float64 `name:"a" default:"7.2"`
 		B int64   `name:"b" greater:"20"`
@@ -15,21 +15,21 @@ func TestSettingsTwoElementsNoSubsettings(t *testing.T) {
 
 	x := &MyStruct{}
 
-	s, err := settings.FromStructPtr("ABC", x)
+	s, err := group.FromStructPtr("ABC", x)
 
 	if !assert.NoError(t, err) || !assert.NotNil(t, s) {
 		return
 	}
 
-	assert.Empty(t, s.Subsettings())
+	assert.Empty(t, s.Groups())
 	assert.Len(t, s.Elements(), 2)
 	assert.NotNil(t, s.Element("a"))
 	assert.NotNil(t, s.Element("b"))
 	assert.Nil(t, s.Element("xyz"))
-	assert.Nil(t, s.Subsetting("xyz"))
+	assert.Nil(t, s.Group("xyz"))
 }
 
-func TestSettingsTwoSubsettings(t *testing.T) {
+func TestGroupTwoSubsettings(t *testing.T) {
 	type X struct {
 		A float64 `name:"a" default:"7.2"`
 		B int64   `name:"b" greater:"20"`
@@ -41,18 +41,18 @@ func TestSettingsTwoSubsettings(t *testing.T) {
 
 	x := &MyStruct{}
 
-	s, err := settings.FromStructPtr("ABC", x)
+	s, err := group.FromStructPtr("ABC", x)
 
 	if !assert.NoError(t, err) || !assert.NotNil(t, s) {
 		return
 	}
 
 	assert.Empty(t, s.Elements())
-	assert.Len(t, s.Subsettings(), 2)
+	assert.Len(t, s.Groups(), 2)
 
-	y := s.Subsetting("Y")
+	y := s.Group("Y")
 	assert.NotNil(t, y)
 
-	z := s.Subsetting("Z")
+	z := s.Group("Z")
 	assert.NotNil(t, z)
 }

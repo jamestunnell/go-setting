@@ -1,10 +1,10 @@
-package settings_test
+package group_test
 
 import (
 	"testing"
 
-	"github.com/jamestunnell/go-settings"
 	"github.com/jamestunnell/go-settings/element"
+	"github.com/jamestunnell/go-settings/group"
 	"github.com/jamestunnell/go-settings/option"
 	"github.com/jamestunnell/go-settings/value"
 	"github.com/stretchr/testify/assert"
@@ -13,7 +13,7 @@ import (
 func TestFromStructGivenStructNonPointer(t *testing.T) {
 	type MyStruct struct{}
 
-	s, err := settings.FromStructPtr("ABC", MyStruct{})
+	s, err := group.FromStructPtr("ABC", MyStruct{})
 
 	assert.Error(t, err)
 	assert.Nil(t, s)
@@ -23,7 +23,7 @@ func TestFromStructPtrEmpty(t *testing.T) {
 	type MyStruct struct{}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr("ABC", x)
+	s, err := group.FromStructPtr("ABC", x)
 
 	if !assert.NoError(t, err) || !assert.NotNil(t, s) {
 		return
@@ -62,7 +62,7 @@ func TestFromStructPtrFieldsForAllSupportedValueTypes(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr("XYZ", x)
+	s, err := group.FromStructPtr("XYZ", x)
 
 	if !assert.NoError(t, err) || !assert.NotNil(t, s) {
 		return
@@ -103,7 +103,7 @@ func TestFromStructPtrDuplicateElemNames(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr("ABC", x)
+	s, err := group.FromStructPtr("ABC", x)
 
 	assert.Error(t, err)
 	assert.Nil(t, s)
@@ -115,7 +115,7 @@ func TestFromStructPtrInvalidOptionTag(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr("ABC", x)
+	s, err := group.FromStructPtr("ABC", x)
 
 	assert.Nil(t, s)
 	assert.Error(t, err)
@@ -127,7 +127,7 @@ func TestFromStructPtrMissingNameOption(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr("ABC", x)
+	s, err := group.FromStructPtr("ABC", x)
 
 	assert.NotNil(t, s)
 	assert.NoError(t, err)
@@ -143,7 +143,7 @@ func TestFromStructPtrEmptyNameOption(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr("ABC", x)
+	s, err := group.FromStructPtr("ABC", x)
 
 	// Empty option values are ignored
 	assert.NotNil(t, s)
@@ -156,7 +156,7 @@ func TestFromStructPtrBadElemName(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr("ABC", x)
+	s, err := group.FromStructPtr("ABC", x)
 
 	assert.Nil(t, s)
 	assert.Error(t, err)
@@ -168,7 +168,7 @@ func TestFromStructPtrBadOptionValue(t *testing.T) {
 	}
 
 	x := &MyStruct{}
-	s, err := settings.FromStructPtr("ABC", x)
+	s, err := group.FromStructPtr("ABC", x)
 
 	assert.Nil(t, s)
 	assert.Error(t, err)
@@ -184,11 +184,11 @@ func TestFromStructWithSubsetting(t *testing.T) {
 	}
 
 	b := &B{}
-	s, err := settings.FromStructPtr("ABC", b)
+	s, err := group.FromStructPtr("ABC", b)
 
 	assert.NotNil(t, s)
 	assert.NoError(t, err)
-	assert.Len(t, s.Subsettings(), 1)
+	assert.Len(t, s.Groups(), 1)
 }
 
 func TestFromStructFailToMakeSubsetting(t *testing.T) {
@@ -201,7 +201,7 @@ func TestFromStructFailToMakeSubsetting(t *testing.T) {
 	}
 
 	b := &B{}
-	s, err := settings.FromStructPtr("ABC", b)
+	s, err := group.FromStructPtr("ABC", b)
 
 	assert.Nil(t, s)
 	assert.Error(t, err)
