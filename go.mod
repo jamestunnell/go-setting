@@ -1,4 +1,4 @@
-module github.com/jamestunnell/go-settings
+module github.com/jamestunnell/go-setting
 
 go 1.14
 
